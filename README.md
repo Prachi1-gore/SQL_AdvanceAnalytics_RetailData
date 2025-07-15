@@ -1,216 +1,132 @@
-# Retail Data Analysis and Reporting
-This repository contains SQL queries and generated reports for analyzing customer, sales, and product data within a retail context. The analyses aim to provide insights into customer behavior, product performance, and overall sales trends.
+# SQL Advanced Analytics Project
 
-Table of Contents
-Project Overview
+**Welcome to the SQL Advanced Analytics Project repository! 🚀 This project demonstrates comprehensive data analytics and reporting capabilities, from advanced SQL analysis to business intelligence insights.**
 
-Analysis Categories
+## 🏗️ Data Architecture
 
-Change Over Time
+The data architecture for this project follows Medallion Architecture with **Bronze**, **Silver**, and **Gold** layers:
 
-Cumulative Analysis
+1. **Bronze Layer**: Stores raw data as-is from the source systems. Data is ingested from CSV Files into SQL Server Database.
+2. **Silver Layer**: This layer includes data cleansing, standardization, and normalization processes to prepare data for analysis.
+3. **Gold Layer**: Houses business-ready data modeled into a star schema required for reporting and analytics.
 
-Performance Analysis
+## 📖 Project Overview
 
-Part-to-Whole Proportional Analysis
+This project involves:
 
-Data Segmentation
+1. **Advanced SQL Analytics**: Implementing sophisticated analytical queries using window functions, CTEs, and complex aggregations.
+2. **Time Series Analysis**: Analyzing trends, cumulative metrics, and year-over-year comparisons.
+3. **Performance Analysis**: Comparing current performance against historical data and targets.
+4. **Customer Segmentation**: Grouping customers based on spending behavior and lifecycle stages.
+5. **Business Intelligence Reports**: Creating comprehensive customer and product reports for stakeholder insights.
 
-Generated Reports
+## 🚀 Project Requirements
 
-Customer Report
+### Advanced Data Analysis (SQL Analytics)
 
-Product Report
+**Objective**
+Develop advanced SQL analytics to deliver detailed insights into:
+* **Customer Behavior & Segmentation**
+* **Product Performance Analysis**
+* **Sales Trends & Time Series Analysis**
+* **Performance Metrics & KPIs**
 
-Database Schema (Assumed)
+**Specifications**
+* **Advanced Analytics**: Implement complex analytical patterns including time series, performance analysis, and segmentation.
+* **Data Quality**: Ensure robust data handling with null checks and edge case management.
+* **Business Intelligence**: Create comprehensive reports consolidating key metrics for decision-making.
+* **Scope**: Focus on actionable insights that drive business value and strategic decisions.
+* **Documentation**: Provide clear documentation of analytical approaches and business logic.
 
-Usage
+## 📊 Analytics Components
 
-Project Overview
-This project utilizes SQL to extract meaningful insights from retail transactional data. It covers various analytical techniques, including time-series analysis, performance comparisons, proportional analysis, and data segmentation. The ultimate goal is to generate comprehensive reports that can inform business strategies related to customer engagement and product management.
+### 1. Change Over Time Analysis
+- **Monthly trend analysis** tracking sales performance, customer counts, and quantity metrics
+- **Time-based aggregations** to identify seasonal patterns and growth trends
 
-Analysis Categories
-The Advance Analysis on customer.sql file contains several types of analytical queries:
+### 2. Cumulative Analysis
+- **Running totals** of sales over time to understand business trajectory
+- **Progressive aggregations** showing cumulative growth patterns
+- **Moving averages** for price and performance metrics
 
-Change Over Time
-This section includes queries to analyze trends in key metrics over time.
+### 3. Performance Analysis
+- **Year-over-year comparisons** for product sales performance
+- **Variance analysis** comparing actual vs. average performance
+- **Trend classification** (Above/Below Average, Increasing/Decreasing)
 
-Total Sales, Total Customers, and Total Quantity by Month: This query helps understand monthly performance trends.
+### 4. Part-to-Whole Analysis
+- **Category contribution analysis** showing which product categories drive the most revenue
+- **Percentage calculations** for market share and impact assessment
 
-SQL
+### 5. Data Segmentation
+- **Product cost segmentation** grouping products into price ranges
+- **Customer lifecycle segmentation** (VIP, Regular, New customers)
+- **Behavioral segmentation** based on spending patterns and tenure
 
-SELECT
-Month (order_date) as order_year,
-Sum(sales_amount) as Total_sales,
-Count(DISTINCT customer_key) as Total_Customer,
-Sum(quantity) as Total_quantity
-FROM gold.fact_sales
-Where order_date is not null
-Group by Month(order_date)
-Order by Month(order_date)
-Cumulative Analysis
-Queries in this section progressively aggregate data over time to show growth or decline.
+### 6. Comprehensive Reports
 
-Running Total of Sales and Running Average Price by Year: This provides a cumulative view of sales and pricing trends.
+#### Customer Report
+- **Customer Demographics**: Age groups and customer profiles
+- **Customer Segmentation**: VIP, Regular, and New customer classifications
+- **Key Metrics**: Total orders, sales, quantity, and product diversity
+- **Behavioral KPIs**: Recency, average order value, and monthly spend patterns
 
-SQL
+#### Product Report
+- **Product Performance**: Sales metrics and quantity sold
+- **Revenue Segmentation**: High-Performers, Mid-Range, and Low-Performers
+- **Product Analytics**: Average selling price, order revenue, and monthly revenue
+- **Market Analysis**: Category and subcategory performance insights
 
-SELECT
-order_date,
-total_sales,avg_price,
-SUM(total_sales) over (Order by order_date) AS Running_total_sales,
-AVG(avg_price) over(Order by order_date) as Running_Average_price
-FROM
-(
-SELECT
-DATETRUNC(YEAR,order_date) as Order_date,
-Sum(sales_amount) as Total_sales,
-AVG (price) as avg_price
-From gold.fact_sales
-Where order_date is Not Null
-Group by DATETRUNC(YEAR,order_date)
-) t
-Performance Analysis
-This section focuses on comparing current performance against targets or previous periods.
+## 🎯 Key Features
 
-Yearly Product Performance Analysis: Compares each product's sales to its average sales performance and the previous year's sales. It classifies performance as 'Above Avg', 'Below Avg', or 'AVG' and 'Increasing', 'Decreasing', or 'No Change' year-over-year.
+### Advanced SQL Techniques
+- **Window Functions**: LAG, LEAD, ROW_NUMBER, RANK for analytical insights
+- **Common Table Expressions (CTEs)**: Complex multi-step analytical queries
+- **Conditional Logic**: CASE statements for dynamic categorization
+- **Date Functions**: DATETRUNC, DATEDIFF for time-based analysis
 
-SQL
+### Business Intelligence
+- **Customer Lifecycle Analysis**: Understanding customer journey and value
+- **Product Performance Metrics**: Revenue analysis and market positioning
+- **Trend Analysis**: Identifying growth patterns and business trajectories
+- **Segmentation Analysis**: Targeted insights for different customer and product groups
 
-WITH yearly_product_sales as(
-SELECT p.product_name,
-YEAR (f.order_date) as order_year,
-SUM(f.sales_amount) as current_sales
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_products p
-ON f.product_key=p.product_key
-WHERE f.product_key IS NOT NULL
-GROUP BY p.product_name, YEAR (f.order_date)
-)
-SELECT
--- ... (rest of the query for performance analysis)
-FROM yearly_product_sales
-Order by product_name, order_year
-Part-to-Whole Proportional Analysis
-These queries help understand the contribution of individual parts to the overall total.
+### Data Quality & Handling
+- **Null Value Management**: Robust handling of missing data
+- **Edge Case Prevention**: NULLIF and division by zero protection
+- **Data Type Conversions**: Proper casting for accurate calculations
 
-Category Contribution to Overall Sales: Identifies which product categories contribute most to total sales by calculating their percentage of overall sales.
+## 🛠️ Technical Implementation
 
-SQL
+### Database Schema
+- **Fact Table**: `gold.fact_sales` - Central sales transaction data
+- **Dimension Tables**: 
+  - `gold.dim_customers` - Customer master data
+  - `gold.dim_products` - Product catalog information
 
-With Category_sales as(
-SELECT
-category,
-Sum(sales_amount) as Total_sales
-From gold.fact_sales f
-LEFT JOIN gold.dim_products p
-ON f.product_key=p.product_key
-GROUP by category
-)
-SELECT category, Total_sales,
-Sum(Total_sales) Over () as Overall_sales,
-CONCAT(ROUND((CAST(Total_sales as FLOAT)/Sum(Total_sales) Over ())*100,2),'%') as Percentage_of_total
-FROM Category_sales
-ORDER BY Total_sales Desc
-Data Segmentation
-This section includes queries for grouping data based on specific criteria.
+### Key Analytical Patterns
+- **Time Series Analysis**: Month-over-month and year-over-year comparisons
+- **Cohort Analysis**: Customer segmentation based on behavior and lifecycle
+- **Performance Benchmarking**: Comparing metrics against averages and targets
+- **Proportional Analysis**: Understanding contribution to overall business metrics
 
-Product Segmentation by Cost Range: Segments products into different cost ranges (e.g., 'Below 100', '100-500', '500-1000', 'Above 1000') and counts the number of products in each segment.
+## 📈 Business Value
 
-SQL
+### Strategic Insights
+- **Customer Segmentation**: Targeted marketing and retention strategies
+- **Product Performance**: Inventory optimization and pricing strategies
+- **Sales Trends**: Revenue forecasting and business planning
+- **Performance Metrics**: Data-driven decision making and goal setting
 
-With product_segment as (
-Select product_key,product_name,
-cost,
-Case
-	When cost<100 THEN 'Below 100'
-	-- ... (rest of the case statement)
-END Cost_range
-FROM gold.dim_products)
-SELECT cost_range,
-Count(product_key) as Total_Product
-From product_segment
-Group by Cost_range
-Order by Total_Product DESC
-Customer Segmentation by Spending Behavior: Groups customers into 'VIP', 'Regular', and 'New' segments based on their lifespan and total spending.
+### Operational Benefits
+- **Automated Reporting**: Consistent and reliable business intelligence
+- **Scalable Analytics**: Reusable analytical frameworks
+- **Data-Driven Culture**: Empowering stakeholders with actionable insights
 
-SQL
+## 🛡️ License
 
-WITH Customer_Spending as (
-SELECT f.customer_key,
-SUM(f.sales_amount) as Total_spend,
-MIN(order_date) as first_order,
-MAX(order_date) as last_order,
-DATEDIFF (MONTH,MIN(order_date),MAX(order_date)) as Lifespan
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
-ON f.customer_key=c.customer_key
-Group by f.customer_key
-)
-SELECT
-COUNT(customer_key) as Total_Customer,
-Customer_segment
-FROM
-(
-SELECT
-customer_key,
-CASE
-	WHEN Lifespan>= 12 AND Total_spend>5000 THEN 'VIP'
-	-- ... (rest of the case statement)
-	ELSE 'New'
-END as Customer_segment
-FROM Customer_Spending) t
-Group by Customer_segment
-ORDER BY Total_Customer DESC
-Generated Reports
-Two comprehensive reports have been generated to provide a holistic view of customer and product performance.
+This project is licensed under the MIT License. You are free to use, modify, and share this project with proper attribution.
 
-Customer Report
-The Customers_Report.sql file (also present in Advance Analysis on customer.sql) defines a view or query for a detailed customer report.
+## 🌟 About Me
 
-Purpose: Consolidates key customer metrics and behaviors.
-
-Highlights:
-
-Gathers essential fields such as names, ages, and transaction details.
-
-Segments customers into categories (VIP, Regular, New) and age groups.
-
-Aggregates customer-level metrics: total orders, total sales, total quantity purchased, total products, and lifespan (in months).
-
-Calculates valuable KPIs: recency (months since last order), average order value, and average monthly spend.
-
-Product Report
-The Product_Report.sql file defines a view or query for a detailed product report.
-
-Purpose: Consolidates key product metrics and behaviors.
-
-Highlights:
-
-Gathers essential fields such as product name, category, subcategory, and cost.
-
-Segments products by revenue to identify High-Performers, Mid-Range, or Low-Performers.
-
-Aggregates product-level metrics: total orders, total sales, total quantity sold, total customers (unique), and lifespan (in months).
-
-Calculates valuable KPIs: recency (months since last sale), average order revenue (AOR), and average monthly revenue.
-
-Database Schema (Assumed)
-The queries are built upon an assumed star schema, primarily interacting with the following tables:
-
-gold.fact_sales: Contains sales transaction details (e.g., order_number, product_key, customer_key, order_date, sales_amount, quantity, price).
-
-gold.dim_customers: Contains customer master data (e.g., customer_key, customer_number, first_name, last_name, birthdate).
-
-gold.dim_products: Contains product master data (e.g., product_key, product_name, category, subcategory, cost).
-
-Usage
-To use these queries:
-
-Ensure you have access to a SQL database containing the gold.fact_sales, gold.dim_customers, and gold.dim_products tables with appropriate data.
-
-Connect to your SQL database.
-
-Execute the desired queries from Advance Analysis on customer.sql for various analyses or run the Customers_Report.sql and Product_Report.sql files to generate the comprehensive reports.
-
-Modify the queries as needed to fit specific analytical requirements or database variations.
+Hi there! I'm passionate about data analytics and business intelligence, transforming raw data into actionable insights that drive business success.
